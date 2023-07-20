@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<taglib xmlns="http://java.sun.com/xml/ns/javaee"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
-        version="2.1">
-
-    <tlib-version>1.0</tlib-version>
-    <short-name>myshortname</short-name>
-    <uri>http://mycompany.com</uri>
-
-    <!-- Invoke 'Generate' action to add tags or functions -->
-
-</taglib>
+<?xml version="1.0" ?><musicbandservicedto><musicbandstorage><musicbanddto><name>Butterfield Blues Band</name><coordinates><x>2</x><y>2</y></coordinates><numberofparticipants>4</numberofparticipants><genre>BLUES</genre><frontman><name>Paul Butterfield</name><height>170.0</height><weight>70.0</weight><passportid>222222</passportid><location><x>2.0</x><y>2</y><z>2.0</z><name>Illinois</name></location></frontman></musicbanddto><musicbanddto><name>Miles Davis Quintet</name><coordinates><x>1</x><y>1</y></coordinates><numberofparticipants>5</numberofparticipants><genre>JAZZ</genre><frontman><name>Wayne Shorter</name><height>180.0</height><weight>80.0</weight><passportid>111111</passportid><location><x>1.0</x><y>1</y><z>1.0</z><name>California</name></location></frontman></musicbanddto></musicbandstorage></musicbandservicedto>

@@ -5,6 +5,7 @@ import com.andyegor.MusicBandService;
 import com.andyegor.entity.MusicBand;
 
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
@@ -29,31 +30,35 @@ public class XmlHelper {
             XMLEventWriter xew = xof.createXMLEventWriter(outputStream);
             JAXBContext jc = JAXBContext.newInstance(MusicBandServiceDTO.class);
             Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(serviceDTO, xew);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    public static MusicBandServiceDTO parseXmlToMusicBands (String filename){
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        final Path fileIn = Paths.get(filename);
-        try(InputStreamReader inputStreamReader =
-                    new InputStreamReader(Files.newInputStream(fileIn));) {
-            XMLEventReader xer = xif.createXMLEventReader(inputStreamReader);
-            JAXBContext jc = JAXBContext.newInstance(MusicBandServiceDTO.class);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            MusicBandServiceDTO serviceDTO = null;
-            while(xer.hasNext()) {
-                if(xer.peek().isStartElement() && xer.peek().asStartElement().getName().getLocalPart().equals("musicBandServiceDTO")){
-                serviceDTO = (MusicBandServiceDTO) unmarshaller.unmarshal(xer);}
-                else{
-                xer.nextEvent();
-                }
-            }
-            return serviceDTO;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static MusicBandServiceDTO parseXmlToMusicBands (String filename) throws JAXBException, FileNotFoundException {
+//        XMLInputFactory xif = XMLInputFactory.newFactory();
+//        final Path fileIn = Paths.get(filename);
+//        try(InputStreamReader inputStreamReader =
+//                    new InputStreamReader(Files.newInputStream(fileIn));) {
+//            XMLEventReader xer = xif.createXMLEventReader(inputStreamReader);
+//            JAXBContext jc = JAXBContext.newInstance(MusicBandServiceDTO.class);
+//            Unmarshaller unmarshaller = jc.createUnmarshaller();
+//            MusicBandServiceDTO serviceDTO = null;
+//            while(xer.hasNext()) {
+//                if(xer.peek().isStartElement() && xer.peek().asStartElement().getName().getLocalPart().equals("musicBandServiceDTO")){
+//                serviceDTO = (MusicBandServiceDTO) unmarshaller.unmarshal(xer);}
+//                else{
+//                xer.nextEvent();
+//                }
+//            }
+//            return serviceDTO;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        JAXBContext context = JAXBContext.newInstance(MusicBandServiceDTO.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        FileReader fileReader = new FileReader(filename);
+        return (MusicBandServiceDTO) unmarshaller.unmarshal(fileReader);
     }
 }

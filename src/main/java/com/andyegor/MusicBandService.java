@@ -1,14 +1,23 @@
 package com.andyegor;
 
+import com.andyegor.DTO.CoordinatesDTO;
+import com.andyegor.DTO.MusicBandDTO;
 import com.andyegor.DTO.MusicBandServiceDTO;
 import com.andyegor.comparator.MusicBandComparator;
+import com.andyegor.entity.Coordinates;
+import com.andyegor.entity.Location;
 import com.andyegor.entity.MusicBand;
 import com.andyegor.entity.Person;
+import com.andyegor.exception.CollectionEmptyException;
+import com.andyegor.exception.NoBandFoundException;
 import com.andyegor.helper.ValidationHelper;
 import com.andyegor.helper.XmlHelper;
+import jakarta.xml.bind.JAXBException;
 import lombok.Getter;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -24,8 +33,20 @@ public class MusicBandService {
         this.initializingTime = LocalDateTime.now();
     }
     public void uploadMusicBands(String filename){
-        MusicBandServiceDTO serviceDTO = XmlHelper.parseXmlToMusicBands(filename);
-        for (MusicBand musicBand: serviceDTO.getMusicBandStorage()){
+        MusicBandServiceDTO serviceDTO = null;
+        try {
+            serviceDTO = XmlHelper.parseXmlToMusicBands(filename);
+        } catch (JAXBException e) {
+            //TODO: correct words
+            throw new RuntimeException("problem with uploading from xml");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("incorrect filepath");
+        }
+        for (MusicBandDTO musicBandDTO: serviceDTO.getMusicBandStorage()){
+            Location location = new Location(musicBandDTO.getFrontMan().getLocation());
+            Person frontMan = new Person(musicBandDTO.getFrontMan(), location);
+            Coordinates coordinates = new Coordinates(musicBandDTO.getCoordinates());
+            MusicBand musicBand = new MusicBand(musicBandDTO, frontMan, coordinates);
             this.musicBandStorage.add(musicBand);
         }
     }
@@ -63,29 +84,39 @@ public class MusicBandService {
     public void add(MusicBand musicBand) {
         musicBandStorage.add(musicBand);
     }
-    public void updateById(long oldBandID, MusicBand newMusicBand) {
+    public void updateById(long oldBandID, MusicBand newMusicBand) throws NoBandFoundException {
         MusicBand foundMusicBand = musicBandStorage.stream()
                 .filter(musicBand -> musicBand.getId() == oldBandID)
                 .findFirst()
                 .orElse(null);
-        ValidationHelper.checkForNull(foundMusicBand, "no band with such ID");
+        if(!ValidationHelper.checkNotNull(foundMusicBand)){
+            throw new NoBandFoundException("No band with such ID in collection");
+        }
         musicBandStorage.add(newMusicBand);
         musicBandStorage.remove(foundMusicBand);
     }
-    public void removeById (long id) {
+    public void removeById (long id) throws NoBandFoundException {
         MusicBand foundMusicBand = musicBandStorage.stream() //перевели коллекцию в стрим
                 .filter(musicBand -> musicBand.getId() == id) //выбрали из коллекции те муз группы, которые подходят по айди
                 .findFirst()
                 .orElse(null);
-        ValidationHelper.checkForNull(foundMusicBand, "no band with such id");
+        if(!ValidationHelper.checkNotNull(foundMusicBand)){
+            throw new NoBandFoundException("No band with such ID in collection");
+        }
         musicBandStorage.remove(foundMusicBand);
     }
     public void clear() {
         musicBandStorage.clear();
     }
     public void save() {
-        MusicBandServiceDTO serviceDTO = new MusicBandServiceDTO(musicBandStorage);
-        XmlHelper.parseMusicBandsToXml(serviceDTO, "./MusicBands.xml");
+        Queue<MusicBandDTO> musicBandStorageDTO = new LinkedList<>();
+        for (MusicBand musicBand: musicBandStorage) {
+            MusicBandDTO musicBandDTO = musicBand.getMusicBandDTO();
+            musicBandStorageDTO.add(musicBandDTO);
+        }
+        MusicBandServiceDTO serviceDTO = new MusicBandServiceDTO(musicBandStorageDTO);
+        //TODO:filename
+        XmlHelper.parseMusicBandsToXml(serviceDTO, "C:\\Users\\andye\\IdeaProjects\\Summer_labs\\src\\main\\resources\\output.xml");
     }
     public void exit() {
         this.setWorkState(false);
@@ -98,20 +129,23 @@ public class MusicBandService {
     public Boolean getWorkState() {
         return workState;
     }
-    public void removeFirst() {
+    public void removeFirst() throws CollectionEmptyException {
         if (musicBandStorage.size() == 0) {
-            throw new RuntimeException("collection empty");
+            throw new CollectionEmptyException("Collection is empty, cannot remove first");
         }
         musicBandStorage.poll();
     }
 
-    public void removeHead() {
+    public void removeHead() throws CollectionEmptyException {
         if (musicBandStorage.size() == 0) {
-            throw new RuntimeException("collection empty");
+            throw new CollectionEmptyException("Collection is empty, cannot remove head");
         }
         System.out.println(musicBandStorage.poll().toString());
     }
-    public void minByCreationDate(){
+    public void minByCreationDate() throws CollectionEmptyException {
+        if (musicBandStorage.size() == 0) {
+            throw new CollectionEmptyException("Collection is empty, cannot find min by creation date");
+        }
         MusicBand tmp = musicBandStorage.peek();
         for (MusicBand musicBand : musicBandStorage) {
             if (musicBand.getCreationDate().isBefore(tmp.getCreationDate())){
@@ -120,20 +154,22 @@ public class MusicBandService {
         }
         System.out.println(tmp.toString());
     }
-    public void filterLessThanFrontMan (Person startFrontMan) {
+    public void filterLessThanFrontMan (Person startFrontMan) throws NoBandFoundException {
         List<MusicBand> foundMusicBands = musicBandStorage.stream()
                 .filter(musicBand -> musicBand.getFrontMan().compareTo(startFrontMan) == -1)
                 .collect(Collectors.toList());
         if (foundMusicBands.isEmpty()) {
-            System.out.println("No bands with such front man");
-        } else {
-            for (MusicBand foundMusicBand : foundMusicBands) {
-                System.out.println(foundMusicBand.toString());
-            }
+            throw new NoBandFoundException("No bands with frontman less than put");
+        }
+        for (MusicBand foundMusicBand : foundMusicBands) {
+            System.out.println(foundMusicBand.toString());
         }
     }
     //TODO printFieldAscendingGenre test
-    public void printFieldAscendingGenre () {
+    public void printFieldAscendingGenre () throws CollectionEmptyException {
+        if (musicBandStorage.size() == 0) {
+            throw new CollectionEmptyException("Collection is empty");
+        }
         for (MusicBand musicBand : musicBandStorage) {
             System.out.println(musicBand.getGenre().toString());
         }

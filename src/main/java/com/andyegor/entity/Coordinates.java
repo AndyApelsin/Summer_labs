@@ -1,7 +1,10 @@
 package com.andyegor.entity;
 
+import com.andyegor.DTO.CoordinatesDTO;
 import com.andyegor.helper.ValidationHelper;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -10,16 +13,18 @@ import jakarta.xml.bind.annotation.XmlElement;
 
 @Getter
 @Setter
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Coordinates {
-    @XmlElement(name = "x")
     private Integer x;
-    @XmlElement(name = "y")
     private Long y;
     public Coordinates(Integer x, Long y) {
-        ValidationHelper.checkForNull(x, "x is null");
-        ValidationHelper.checkForNull(y, "y is null");
         this.x = x;
         this.y = y;
+    }
+    public Coordinates(CoordinatesDTO dto){
+        this.x = dto.getX();
+        this.y = dto.getY();
+    }
+    CoordinatesDTO getCoordinatesDTO(){
+        return new CoordinatesDTO(x, y);
     }
 }

@@ -1,6 +1,7 @@
 package com.andyegor.commands;
 
 import com.andyegor.MusicBandService;
+import com.andyegor.exception.CollectionEmptyException;
 
 public class MinByCreationDate implements Command {
     private MusicBandService musicBandService;
@@ -11,6 +12,10 @@ public class MinByCreationDate implements Command {
 
     @Override
     public void execute() {
-        musicBandService.minByCreationDate();
+        try {
+            musicBandService.minByCreationDate();
+        } catch (CollectionEmptyException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
