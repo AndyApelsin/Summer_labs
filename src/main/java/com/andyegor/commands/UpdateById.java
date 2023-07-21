@@ -2,6 +2,7 @@ package com.andyegor.commands;
 
 import com.andyegor.MusicBandService;
 import com.andyegor.entity.MusicBand;
+import com.andyegor.exception.NoBandFoundException;
 import com.andyegor.helper.InputHelper;
 
 public class UpdateById implements Command {
@@ -15,6 +16,11 @@ public class UpdateById implements Command {
     public void execute() {
         int oldId = InputHelper.idInput();
         MusicBand newMusicBand = InputHelper.bandInput();
-        musicBandService.updateById(oldId, newMusicBand);
+        try {
+            musicBandService.updateById(oldId, newMusicBand);
+        } catch (NoBandFoundException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.andyegor.commands;
 
 import com.andyegor.MusicBandService;
+import com.andyegor.exception.CollectionEmptyException;
 
 public class PrintFieldAscendingGenre implements Command {
     private MusicBandService musicBandService;
@@ -11,6 +12,10 @@ public class PrintFieldAscendingGenre implements Command {
 
     @Override
     public void execute() {
-        musicBandService.printFieldAscendingGenre();
+        try {
+            musicBandService.printFieldAscendingGenre();
+        } catch (CollectionEmptyException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

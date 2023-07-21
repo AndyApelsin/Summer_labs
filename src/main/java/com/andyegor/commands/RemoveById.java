@@ -1,6 +1,7 @@
 package com.andyegor.commands;
 
 import com.andyegor.MusicBandService;
+import com.andyegor.exception.NoBandFoundException;
 import com.andyegor.helper.InputHelper;
 
 public class RemoveById implements Command{
@@ -10,9 +11,12 @@ public class RemoveById implements Command{
         this.musicBandService = musicBandService;
     }
     @Override
-
     public void execute() {
         int bandId = InputHelper.idInput();
-        musicBandService.removeById(bandId);
+        try {
+            musicBandService.removeById(bandId);
+        } catch (NoBandFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

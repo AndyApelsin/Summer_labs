@@ -13,10 +13,10 @@ import java.util.Queue;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement
+@XmlRootElement(name = "musicbandservicedto")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MusicBandServiceDTO {
-    @XmlElementWrapper
-    @XmlElement(name = "musicbandstorage")
-    private Queue<MusicBand> musicBandStorage;
+    @XmlElementWrapper(name = "musicbandstorage")
+    @XmlElement(name = "musicbanddto")
+    private Queue<MusicBandDTO> musicBandStorage;
 }

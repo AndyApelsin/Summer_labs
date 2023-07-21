@@ -1,10 +1,12 @@
 package com.andyegor;
 
+import com.andyegor.DTO.MusicBandDTO;
 import com.andyegor.DTO.MusicBandServiceDTO;
 import com.andyegor.comparator.MusicBandComparator;
 import com.andyegor.entity.*;
 import com.andyegor.helper.XmlHelper;
 
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -24,10 +26,10 @@ public class test
                 new Person("nosok", 160f, 100, "555555",
                         new Location(6f, 6, 6,"hell")));
         MusicBandServiceDTO serviceDTO = new MusicBandServiceDTO();
-        Queue<MusicBand> queue = new PriorityQueue<>(new MusicBandComparator());
-        queue.add(musicBand2);
-        queue.add(musicBand1);
+        Queue<MusicBandDTO> queue = new LinkedList<>();
+        queue.add(musicBand1.getMusicBandDTO());
+        //queue.add(musicBand2.getMusicBandDTO());
         serviceDTO.setMusicBandStorage(queue);
-        XmlHelper.parseMusicBandsToXml(serviceDTO, "C:\\Users\\andye\\SummerLabs_files\\tmptest.xml");
+        XmlHelper.parseMusicBandsToXml(serviceDTO, "C:\\Users\\andye\\IdeaProjects\\Summer_labs\\src\\main\\resources\\output.xml");
     }
 }

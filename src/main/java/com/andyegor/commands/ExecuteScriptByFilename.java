@@ -4,10 +4,7 @@ import com.andyegor.helper.InputHelper;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +33,11 @@ public class ExecuteScriptByFilename implements Command {
                 }
                 tmp = inputStreamReader.read();
             }
-        } catch (Exception e) {
-            //TODO
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            System.out.println("Filepath is incorrect, there is no such file");
+        } catch (IOException e) {
+            System.out.println("File contains improper data");
         }
-
     }
     private void checkAndUseCommand(String commandCode){
         int commandNumber = Integer.parseInt(commandCode);
