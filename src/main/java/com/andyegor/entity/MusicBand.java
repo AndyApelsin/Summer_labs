@@ -3,12 +3,14 @@ package com.andyegor.entity;
 import com.andyegor.DTO.MusicBandDTO;
 import com.andyegor.generator.IdGenerator;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MusicBand implements Comparable<MusicBand> {
     private int id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -27,15 +29,24 @@ public class MusicBand implements Comparable<MusicBand> {
         this.genre = genre;
         this.frontMan = frontMan;
     }
-    public MusicBand(MusicBandDTO dto, Person frontMan, Coordinates coordinates){
+    public MusicBand(MusicBandDTO dto){
         this.id = IdGenerator.generateId();
         this.creationDate = LocalDateTime.now();
-        this.coordinates = coordinates;
-        this.frontMan = frontMan;
+        this.coordinates = new Coordinates(dto.getCoordinates());
+        this.frontMan = new Person(dto.getFrontMan());
         this.name = dto.getName();
         this.numberOfParticipants = dto.getNumberOfParticipants();
         this.genre = dto.getGenre();
 
+    }
+    public MusicBand(MusicBand musicBand){
+        this.id = musicBand.getId();
+        this.name = musicBand.getName();
+        this.coordinates = musicBand.getCoordinates();
+        this.creationDate = musicBand.getCreationDate();
+        this.numberOfParticipants = musicBand.getNumberOfParticipants();
+        this.genre = musicBand.getGenre();
+        this.frontMan = musicBand.getFrontMan();
     }
     public MusicBandDTO getMusicBandDTO(){
         return new MusicBandDTO(name, coordinates.getCoordinatesDTO(), numberOfParticipants, genre, frontMan.getPersonDTO());

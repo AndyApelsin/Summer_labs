@@ -1,81 +1,20 @@
 package com.andyegor.helper;
 
 import com.andyegor.entity.*;
+import com.andyegor.generator.IdGenerator;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class InputHelper {
-    public static MusicBand bandInput() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Put band name");
-        String bandName = scanner.nextLine();
-        while (!ValidationHelper.checkStringNotEmpty(bandName)){
-            System.out.println("Band name is empty");
-            System.out.println("Put band name");
-            bandName = scanner.nextLine();
-        }
-        System.out.println("Put x coord");
-        String inputTmp = scanner.nextLine();
-        while(!ValidationHelper.isInteger(inputTmp)){
-            System.out.println("x coord must be an integer");
-            System.out.println("Put x coord");
-            inputTmp = scanner.nextLine();
-        }
-        Integer xCoord = Integer.valueOf(inputTmp);
-
-        System.out.println("Put y coord");
-        inputTmp = scanner.nextLine();
-        while (!ValidationHelper.isInteger(inputTmp)){
-            System.out.println("y coord must be Long");
-            System.out.println("Put y coord");
-            inputTmp = scanner.nextLine();
-        }
-        Long yCoord = Long.valueOf(inputTmp);
-        Coordinates bandCoord = new Coordinates(xCoord, yCoord);
-
-        System.out.println("Put number of participants");
-        inputTmp = scanner.nextLine();
-        while (!(ValidationHelper.isInteger(inputTmp) &&
-                ValidationHelper.checkNumberPositivity(Long.valueOf(inputTmp)))) {
-            System.out.println("Number of participants must be Long and positive");
-            System.out.println("Put number of participants");
-            inputTmp = scanner.nextLine();
-        }
-        Long numberOfParticipants = Long.valueOf(inputTmp);
-        System.out.println("""
-                Select music genre:
-                1.Psychedelic cloud rap
-                2.Jazz
-                3.Soul
-                4.Blues
-                5.null
-                """);
-        MusicGenre genre = null;
-        inputTmp = scanner.nextLine();
-        while(!ValidationHelper.isInteger(inputTmp)){
-            System.out.println("You must put an integer");
-            System.out.println("""
-                Select music genre:
-                1.Psychedelic cloud rap
-                2.Jazz
-                3.Soul
-                4.Blues
-                5.null
-                """);
-            inputTmp = scanner.nextLine();
-        }
-        int num = Integer.parseInt(inputTmp);
-        switch (num) {
-            case 1 -> genre = MusicGenre.PSYCHEDELIC_CLOUD_RAP;
-            case 2 -> genre = MusicGenre.JAZZ;
-            case 3 -> genre = MusicGenre.SOUL;
-            case 4 -> genre = MusicGenre.BLUES;
-            default -> genre = null;
-        }
-        Person frontMan = InputHelper.personInput();
-        return new MusicBand(bandName, bandCoord, numberOfParticipants, genre, frontMan);
+    public static MusicBand bandInputWithoutIdAndCreationDate(){
+        return bandInput();
+    }
+    public static MusicBand bandInputGeneratesIdAndCreationDate() {
+        MusicBand musicBand = bandInput();
+        musicBand.setId(IdGenerator.generateId());
+        musicBand.setCreationDate(LocalDateTime.now());
+        return musicBand;
     }
 
     public static Person personInput() {
@@ -181,7 +120,82 @@ public class InputHelper {
         }
         return filepath;
     }
+    private static MusicBand bandInput(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Put band name");
+        String bandName = scanner.nextLine();
+        while (!ValidationHelper.checkStringNotEmpty(bandName)){
+            System.out.println("Band name is empty");
+            System.out.println("Put band name");
+            bandName = scanner.nextLine();
+        }
+        System.out.println("Put x coord");
+        String inputTmp = scanner.nextLine();
+        while(!ValidationHelper.isInteger(inputTmp)){
+            System.out.println("x coord must be an integer");
+            System.out.println("Put x coord");
+            inputTmp = scanner.nextLine();
+        }
+        Integer xCoord = Integer.valueOf(inputTmp);
 
+        System.out.println("Put y coord");
+        inputTmp = scanner.nextLine();
+        while (!ValidationHelper.isInteger(inputTmp)){
+            System.out.println("y coord must be Long");
+            System.out.println("Put y coord");
+            inputTmp = scanner.nextLine();
+        }
+        Long yCoord = Long.valueOf(inputTmp);
+        Coordinates bandCoord = new Coordinates(xCoord, yCoord);
+
+        System.out.println("Put number of participants");
+        inputTmp = scanner.nextLine();
+        while (!(ValidationHelper.isInteger(inputTmp) &&
+                ValidationHelper.checkNumberPositivity(Long.valueOf(inputTmp)))) {
+            System.out.println("Number of participants must be Long and positive");
+            System.out.println("Put number of participants");
+            inputTmp = scanner.nextLine();
+        }
+        Long numberOfParticipants = Long.valueOf(inputTmp);
+        System.out.println("""
+                Select music genre:
+                1.Psychedelic cloud rap
+                2.Jazz
+                3.Soul
+                4.Blues
+                5.null
+                """);
+        MusicGenre genre = null;
+        inputTmp = scanner.nextLine();
+        while(!ValidationHelper.isInteger(inputTmp)){
+            System.out.println("You must put an integer");
+            System.out.println("""
+                Select music genre:
+                1.Psychedelic cloud rap
+                2.Jazz
+                3.Soul
+                4.Blues
+                5.null
+                """);
+            inputTmp = scanner.nextLine();
+        }
+        int num = Integer.parseInt(inputTmp);
+        switch (num) {
+            case 1 -> genre = MusicGenre.PSYCHEDELIC_CLOUD_RAP;
+            case 2 -> genre = MusicGenre.JAZZ;
+            case 3 -> genre = MusicGenre.SOUL;
+            case 4 -> genre = MusicGenre.BLUES;
+            default -> genre = null;
+        }
+        Person frontMan = InputHelper.personInput();
+        MusicBand musicBand = new MusicBand();
+        musicBand.setName(bandName);
+        musicBand.setGenre(genre);
+        musicBand.setNumberOfParticipants(numberOfParticipants);
+        musicBand.setCoordinates(bandCoord);
+        musicBand.setFrontMan(frontMan);
+        return musicBand;
+    }
     //отвечает за ввод строки через InputStreamReader
 //    private static String getInput() {
 //        char[] str = new char[100];

@@ -10,8 +10,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         MusicBandService service = new MusicBandService();
-        //TODO VAR
-        service.uploadMusicBands("C:\\Users\\andye\\IdeaProjects\\Summer_labs\\src\\main\\resources\\input.xml");
+        service.uploadMusicBands(System.getenv("VAR"));
 
         LimitedQueue<String> history = new LimitedQueue<>(7);
         Map<Integer, Command> commandMap = new HashMap<>();
