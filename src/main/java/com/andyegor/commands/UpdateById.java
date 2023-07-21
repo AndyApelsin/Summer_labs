@@ -15,12 +15,11 @@ public class UpdateById implements Command {
     @Override
     public void execute() {
         int oldId = InputHelper.idInput();
-        MusicBand newMusicBand = InputHelper.bandInput();
+        MusicBand newMusicBand = InputHelper.bandInputWithoutIdAndCreationDate();
         try {
             musicBandService.updateById(oldId, newMusicBand);
         } catch (NoBandFoundException e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 }

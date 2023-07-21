@@ -16,6 +16,7 @@ import jakarta.xml.bind.JAXBException;
 import lombok.Getter;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,17 +37,16 @@ public class MusicBandService {
         MusicBandServiceDTO serviceDTO = null;
         try {
             serviceDTO = XmlHelper.parseXmlToMusicBands(filename);
-        } catch (JAXBException e) {
-            //TODO: correct words
-            throw new RuntimeException("problem with uploading from xml");
+//        } catch (JAXBException e) {
+//            //TODO: correct words
+//            throw new RuntimeException("problem with uploading from xml");
         } catch (FileNotFoundException e) {
             throw new RuntimeException("incorrect filepath");
+        } catch (IOException e) {
+            throw new RuntimeException("Problems with file");
         }
         for (MusicBandDTO musicBandDTO: serviceDTO.getMusicBandStorage()){
-            Location location = new Location(musicBandDTO.getFrontMan().getLocation());
-            Person frontMan = new Person(musicBandDTO.getFrontMan(), location);
-            Coordinates coordinates = new Coordinates(musicBandDTO.getCoordinates());
-            MusicBand musicBand = new MusicBand(musicBandDTO, frontMan, coordinates);
+            MusicBand musicBand = new MusicBand(musicBandDTO);
             this.musicBandStorage.add(musicBand);
         }
     }
@@ -92,6 +92,8 @@ public class MusicBandService {
         if(!ValidationHelper.checkNotNull(foundMusicBand)){
             throw new NoBandFoundException("No band with such ID in collection");
         }
+        newMusicBand.setId(foundMusicBand.getId());
+        newMusicBand.setCreationDate(foundMusicBand.getCreationDate());
         musicBandStorage.add(newMusicBand);
         musicBandStorage.remove(foundMusicBand);
     }

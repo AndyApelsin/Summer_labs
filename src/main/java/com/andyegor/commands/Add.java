@@ -13,7 +13,7 @@ public class Add implements Command{
 
     @Override
     public void execute() {
-        MusicBand musicBand = InputHelper.bandInput();
+        MusicBand musicBand = InputHelper.bandInputGeneratesIdAndCreationDate();
         musicBandService.add(musicBand);
     }
 }

@@ -27,12 +27,12 @@ public class Person implements Comparable<Person> {
         this.passportID = passportID;
         this.location = location;
     }
-    public Person(PersonDTO dto, Location location){
+    public Person(PersonDTO dto){
         this.name = dto.getName();
         this.height = dto.getHeight();
         this.weight = dto.getWeight();
         this.passportID = dto.getPassportID();
-        this.location = location;
+        this.location = new Location(dto.getLocation());
     }
     PersonDTO getPersonDTO (){
         return new PersonDTO(name, height, weight, passportID, location.getLocationDTO());

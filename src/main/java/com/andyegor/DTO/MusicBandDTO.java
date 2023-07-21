@@ -22,7 +22,7 @@ public class MusicBandDTO {
     private CoordinatesDTO coordinates; //Поле не может быть null
     @XmlElement(name = "numberofparticipants")
     private Long numberOfParticipants; //Поле не может быть null, Значение поля должно быть больше 0
-    @XmlElement(name = "genre")
+    @XmlElement(name = "genre", nillable = true)
     private MusicGenre genre; //Поле может быть null
     @XmlElement(name = "frontman")
     private PersonDTO frontMan; //Поле не может быть null
